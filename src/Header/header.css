@@ -1,0 +1,137 @@
+.header-body-container{
+    display: flex;
+    height: 100%;
+
+}
+.left-con,.right-con{
+    padding: 1.15vh;
+}
+
+.left-con{
+    flex: .30;
+}
+
+.right-con{
+    flex: .70;
+}
+.search-data{
+    float: left !important;
+}
+
+.properties,.name,.search-data{
+    padding: .75vh;
+    width: auto;
+    background: #4cab46;
+    border: none;
+    margin: 0 5px;
+    border: 1px solid #095600;
+    border-radius: 5px;
+    color: #09561d;  
+    float: right;
+    height: 100%;
+}
+
+.css-tlfecz-indicatorContainer, .css-1hb7zxy-IndicatorsContainer,.css-1wy0on6{
+    display: none !important;
+}
+
+.css-yk16xz-control{
+    background-color: #4cab46 !important;
+    border-color: #0b5902 !important;
+}   
+
+.css-1wa3eu0-placeholder{
+    color: hsl(114deg 100% 17%) !important;
+}
+
+.css-1uccc91-singleValue{
+    color:#cccccc;
+}
+
+.properties:focus,.name:focus,.search-data:focus{
+    outline: none;
+}
+.enter-btn{
+    float: right;
+    width: 70px;
+    height: 100%;
+    padding: 0 !important;
+    border: 1px solid #fff !important;
+    background: #095600 !important;
+    color: #fff !important;
+    border-radius: 5px !important;
+    cursor: pointer;
+    transition: .1s ease-in-out;
+}
+
+.enter-btn:hover{
+    background: #4cab46 !important;
+    border: 1px solid #095600 !important;
+    color: #095600 !important;
+}
+
+button.save-btn.btn.btn-primary {
+    background: #095600;
+    border-color: #fff;
+}
+
+@media (max-width:767px){
+    .header-container{
+        height: 20% !important;
+    }
+    .header-body-container{
+        flex-direction: row;
+    }
+    .left-con{
+        flex: 1 !important;
+    }
+    .css-2b097c-container{
+        width: 100% !important;
+    }
+    .right-con{
+        flex: .3 !important;
+        display: inline-flex;;
+    }
+
+    .right-con > button{
+        float: right !important;
+        height: 100%;
+        width: 100%;
+    }
+    .outer-container{
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+    .enter-btn{
+        height: auto;
+        padding: 0 5px;
+    }
+    .properties, .name, .search-data{
+        width: 100%;
+        float: none;
+        margin: 0;
+    }
+
+    .inner-container{
+        height: auto;
+        width: auto;
+        box-shadow:none;
+    }
+
+    .card-container{
+        margin: 50px 0px 0px;
+        height: 100% !important;
+    }
+    .specifications{
+        flex-direction: column;
+    }
+    .left{
+        border-right: none;
+    }
+
+    .info-card-body{
+        margin: 10px;
+        box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+    }
+}
