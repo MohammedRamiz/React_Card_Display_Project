@@ -1,31 +1,45 @@
 import './App.css';
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import Card from "./Card" 
 import Header from "./Header/Header"
 import db from './Firebase/firebase.js';
 import { propTypes } from 'react-bootstrap/esm/Image';
+import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 
 
-export default class App extends Component {
-  constructor(prop){
-    super(prop)
+const App = props => {
+  // constructor(prop){
+  //   super(prop)
 
-    this.state = {
-      properties: [],
-      currentPropertie:{
-        id:-1,
-        name:'',
-        desc:''
-      },
-      mainId:'',
-      itemNames:[], 
-      itemInfo:[],
-      itemInfoArray:{},
-      dbId:'AKTrzNiiLy6zoIAChLs4' //Default ID
-    }
-  } 
+  //   this.state = {
+  //     properties: [],
+  //     currentPropertie:{
+  //       id:-1,
+  //       name:'',
+  //       desc:''
+  //     },
+  //     mainId:'',
+  //     itemNames:[], 
+  //     itemInfo:[],
+  //     itemInfoArray:{},
+  //     dbId:'AKTrzNiiLy6zoIAChLs4' //Default ID
+  //   }
+  // }
 
-  addUpdateDataHandler = (prop,oprationType) => {
+  const [properties,setProperties] = useState([]);
+  const [currentPropertie,setCurrentPropertie] = useState({
+    id:-1,
+    name:'',
+    desc:''
+  });
+  const [mainId,setMainId] = useState('');
+  const [itemNames,setItemNames] = useState([]);
+  const [itemInfo,setItemInfo] = useState([]);
+  const [itemInfoArray,SetItemInfoArray] = useState({});
+  const dbID = 'AKTrzNiiLy6zoIAChLs4';
+
+
+  const addUpdateDataHandler = (prop,oprationType) => {
   //Update Current Data
   var process = '';
   if(prop.name === 'Update' && typeof(prop.mainId) != 'undefined'){
@@ -44,17 +58,25 @@ export default class App extends Component {
 
     db.collection('Items').onSnapshot(snap =>{
       snap.docs.map(doc =>{
-        if(doc.id === this.state.dbId){
+        if(doc.id === dbId){
           var docs =  doc.data();
           var {Info,...docs} = docs
 
-          this.setState({
-            itemInfo: {id:doc.id,data: Object.keys(docs).map(m=>{
-              if(!isNaN(parseInt(m)))
-                return [Number(m),docs[m]]
-              })},
-              itemInfoArray:{id:doc.id,data: Info},
-          })
+          // this.setState({
+          //   itemInfo: {id:doc.id,data: Object.keys(docs).map(m=>{
+          //     if(!isNaN(parseInt(m)))
+          //       return [Number(m),docs[m]]
+          //     })},
+          //     itemInfoArray:{id:doc.id,data: Info},
+          // })
+
+          setItemInfo({id:doc.id,data: Object.keys(docs).map(m=>{
+            if(!isNaN(parseInt(m)))
+              return [Number(m),docs[m]]
+            })
+          });
+
+          SetItemInfoArray({id:doc.id,data: Info});
         }
       })
     })
@@ -75,26 +97,31 @@ export default class App extends Component {
               })},
               itemInfoArray:{id:doc.id,data: Info},
             })
+
+
+            setItemInfo({id:doc.id,data: Object.keys(docs).map(m=>{
+              if(!isNaN(parseInt(m)))
+                return [Number(m),docs[m]]
+              })});
+  
+            SetItemInfoArray({id:doc.id,data: Info});
           }
         })
       })
     })
     process='add'
   }
-
-    this.setState({
-      currentPropertie:{
+  setCurrentPropertie({
         id:-1,
         name: '',
         desc:'',
         process:process
-      }
-    })
+    });
   }
 
-  editOptionHandler = (e,mid) => {
+  const editOptionHandler = (e,mid) => {
 
-    const itmeInfo = this.state.itemInfo;
+    const itmeInfo = itemInfo;
 
     const itemArray = [];
     if(typeof(itmeInfo.data) !== 'undefined' && itmeInfo.data.length > 0)
@@ -107,45 +134,42 @@ export default class App extends Component {
           currentPropertie:{
               mainId:mid,
               id:index,
-              name:this.state.itemNames.data[index],
+              name:itemNames.data[index],
               desc:i
           }
         })
       ):i)
     }
     else{
-      this.state.itemNames.data.map((item,index) => index  === parseInt(e)?(
-        this.setState({
-          mainId:mid,
-          currentPropertie:{
-              mainId:mid,
-              id:index,
-              name:item,
-              desc:''
-          }
-        })):null)
+      itemNames.data.map((item,index) => index  === parseInt(e)?
+      (
+        setMainId(mid),
+        setProperties({
+                mainId:mid,
+                id:index,
+                name:item,
+                desc:''
+            })
+
+      ):null)
     }
   }
 
   //Called Once After render Call 
-  componentDidMount(){
-
+  useEffect(() => {
     db.collection('Items').onSnapshot(snap =>{
       snap.docs.map(doc =>{
-        if(doc.id === this.state.dbId){
+        if(doc.id === dbId){
           var docs =  doc.data();
           var {Info,...docs} = docs
-
-          this.setState({
-            itemInfo: {id:doc.id,data: Object.keys(docs).map(m=>{
+            setItemInfo({id:doc.id,data: Object.keys(docs).map(m=>{
               if(!isNaN(parseInt(m)))
                 return [Number(m),docs[m]]
-              })},
-              itemInfoArray:{id:doc.id,data: Info},
-          })
+              })});
+              setItemInfoArray({id:doc.id,data: Info})
         }
-      })
-    })
+      });
+    },[]);
 
     db.collection('itemNames').onSnapshot(snap =>{
       snap.docs.map(doc =>{
@@ -154,20 +178,20 @@ export default class App extends Component {
         })
       })
     })
-  }
+  });
 
-  render() {
     return (  
         <div className="outer-container">
           <div className="inner-container">
             <div className="header-container">
-              <Header click={this.addUpdateDataHandler} item={this.state.itemNames} mid={this.state.mainId}/>
+              <Header click={addUpdateDataHandler} item={itemNames} mid={mainId}/>
             </div>
             <div className="card-container">
-              <Card satate={this.state} click={this.addUpdateDataHandler} setNew={this.state.currentPropertie}/> 
+              <Card satate={state} click={addUpdateDataHandler} setNew={currentPropertie}/> 
             </div>
           </div>
         </div>
     );
-  }
 }
+
+export default App

@@ -11,9 +11,6 @@ export default class Header extends Component {
 
         this.state={
             mainId:prop.mid,
-            // id:prop.setNew.id,
-            // inputProNameState:prop.setNew.name,
-            // inputNameState:prop.setNew.desc,
             addNewData:{},
             name: 'Add',
             searchItemHandler:'',
@@ -95,22 +92,6 @@ export default class Header extends Component {
     }
 
     render() {
-        //var oldId = this.state.id;
-        // var isSame = false;
-
-        // if(typeof this.state.mainId !== 'undefined' && typeof this.props.setNew.mainId !== 'undefined'){
-        //         isSame = this.state.mainId !== this.props.setNew.mainId
-        // }
-
-        // if(this.props.setNew.id !== -1 && this.props.setNew.id !== oldId && !isSame){
-        //     this.setState({
-        //         mainId:this.props.setNew.mainId,
-        //         id:this.props.setNew.id,
-        //         inputProNameState:this.props.setNew.name,
-        //         inputNameState:this.props.setNew.desc,
-        //         name: 'Update'
-        //     });
-        // }
 
         return (
                 <div className="header-body-container">
