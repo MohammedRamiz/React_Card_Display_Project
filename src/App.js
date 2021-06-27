@@ -3,40 +3,25 @@ import React, { useEffect, useState } from 'react'
 import Card from "./Card" 
 import Header from "./Header/Header"
 import db from './Firebase/firebase.js';
-import { propTypes } from 'react-bootstrap/esm/Image';
-import { unstable_renderSubtreeIntoContainer } from 'react-dom';
+// import { propTypes } from 'react-bootstrap/esm/Image';
+// import { unstable_renderSubtreeIntoContainer } from 'react-dom'
 
 
 const App = props => {
-  // constructor(prop){
-  //   super(prop)
-
-  //   this.state = {
-  //     properties: [],
-  //     currentPropertie:{
-  //       id:-1,
-  //       name:'',
-  //       desc:''
-  //     },
-  //     mainId:'',
-  //     itemNames:[], 
-  //     itemInfo:[],
-  //     itemInfoArray:{},
-  //     dbId:'AKTrzNiiLy6zoIAChLs4' //Default ID
-  //   }
-  // }
-
-  const [properties,setProperties] = useState([]);
+  //const [properties,setProperties] = useState([]);
   const [currentPropertie,setCurrentPropertie] = useState({
     id:-1,
     name:'',
     desc:''
   });
+
+  console.log(process.env);
+
   const [mainId,setMainId] = useState('');
   const [itemNames,setItemNames] = useState([]);
   const [itemInfo,setItemInfo] = useState([]);
-  const [itemInfoArray,SetItemInfoArray] = useState({});
-  const dbID = 'AKTrzNiiLy6zoIAChLs4';
+  const [itemInfoArray,setItemInfoArray] = useState({});
+  const dbId = 'AKTrzNiiLy6zoIAChLs4';
 
 
   const addUpdateDataHandler = (prop,oprationType) => {
@@ -57,28 +42,21 @@ const App = props => {
     })
 
     db.collection('Items').onSnapshot(snap =>{
-      snap.docs.map(doc =>{
+      let items= [];
+      items = snap.docs.map(doc =>{
         if(doc.id === dbId){
-          var docs =  doc.data();
-          var {Info,...docs} = docs
+          var docs = doc.data();
+          var {Info,...docs} = docs;
 
-          // this.setState({
-          //   itemInfo: {id:doc.id,data: Object.keys(docs).map(m=>{
-          //     if(!isNaN(parseInt(m)))
-          //       return [Number(m),docs[m]]
-          //     })},
-          //     itemInfoArray:{id:doc.id,data: Info},
-          // })
-
-          setItemInfo({id:doc.id,data: Object.keys(docs).map(m=>{
-            if(!isNaN(parseInt(m)))
-              return [Number(m),docs[m]]
-            })
-          });
-
-          SetItemInfoArray({id:doc.id,data: Info});
+          return [Info,docs];
         }
       })
+
+      setItemInfoArray({id:doc.id,data: items[0]});
+
+      items = setItemsInfos(items[1]);
+
+      setItemInfo(items.info);
     })
     process = 'select'
   }
@@ -104,7 +82,7 @@ const App = props => {
                 return [Number(m),docs[m]]
               })});
   
-            SetItemInfoArray({id:doc.id,data: Info});
+            setItemInfoArray({id:doc.id,data: Info});
           }
         })
       })
@@ -117,6 +95,20 @@ const App = props => {
         desc:'',
         process:process
     });
+  }
+
+  const setItemsInfos = (items) =>{
+
+    return items.map(doc => {
+        return {
+        id: doc.id,
+        data: Object.keys(items).map(m=>{
+          if(!isNaN(parseInt(m)))
+            return [Number(m),items[m]]
+          })
+        }
+    });
+
   }
 
   const editOptionHandler = (e,mid) => {
@@ -142,16 +134,15 @@ const App = props => {
     }
     else{
       itemNames.data.map((item,index) => index  === parseInt(e)?
-      (
-        setMainId(mid),
-        setProperties({
-                mainId:mid,
-                id:index,
-                name:item,
-                desc:''
-            })
+        setMainId(mid)
+        // setProperties({
+        //         mainId:mid,
+        //         id:index,
+        //         name:item,
+        //         desc:''
+        //     })
 
-      ):null)
+      :null)
     }
   }
 
@@ -173,9 +164,10 @@ const App = props => {
 
     db.collection('itemNames').onSnapshot(snap =>{
       snap.docs.map(doc =>{
-        this.setState({
-          itemNames: {id: doc.id,data:Object.values(doc.data())}
-        })
+        // this.setState({
+        //   itemNames: {id: doc.id,data:Object.values(doc.data())}
+        // })
+        setItemNames({id: doc.id,data:Object.values(doc.data())});
       })
     })
   });
@@ -187,7 +179,7 @@ const App = props => {
               <Header click={addUpdateDataHandler} item={itemNames} mid={mainId}/>
             </div>
             <div className="card-container">
-              <Card satate={state} click={addUpdateDataHandler} setNew={currentPropertie}/> 
+              <Card itemInfoArray={itemInfoArray} itemNames={itemNames} currentPropertie={currentPropertie} click={addUpdateDataHandler} currProps={currentPropertie}/> 
             </div>
           </div>
         </div>

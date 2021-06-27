@@ -7,13 +7,12 @@ import Specificatin from "./Specification"
 export default class ImageBody extends Component {
 
 
-    constructor(prop){
-        super(prop)   
+    constructor(props){
+        super(props)   
         this.state = {
             show:false,
             infoId:'',
             id:"",
-            inputNameState:prop.state.inputNameState ,
             focusedItem:{}
         }
     }
