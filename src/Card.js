@@ -1,20 +1,9 @@
 import React, { Component, useState } from 'react'
 import "./card.css"
-import ImageBody from "./CardBodys/ImageBody"
-import InfoBody from "./CardBodys/InfoBody"
+import ImageBody from "./Components/CardBodys/ImageBody"
+import InfoBody from "./Components/CardBodys/InfoBody"
 
 const Card = props => {
-    // constructor(prop){
-    //     super() 
-    //     this.state={
-    //         id:prop.setNew.id,
-    //         inputProNameState:prop.setNew.name,
-    //         inputNameState:prop.setNew.desc,
-    //         show:false
-    //     }
-    // }
-
-
     const [id,setId] = useState(props.currProps.id);
     const [inputProNameState,setInputProNameState] = useState(props.currProps.name);
     const [inputNameState,setInputNameState] = useState(props.currProps.desc);
@@ -30,7 +19,7 @@ const Card = props => {
                         <ul>
                             {
                                 Object.keys(props.itemInfoArray).length > 0 &&
-                                    typeof props.itemInfoArray.data !== 'undefined' ? props.itemInfoArray.data.map((item,index)=>{
+                                    props.itemInfoArray.data ? props.itemInfoArray.data.map((item,index)=>{
                                     return <li key={index}>{item}</li> }) : null
                             }
                         </ul>

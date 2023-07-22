@@ -1,119 +1,112 @@
 import './App.css';
 import React, { useEffect, useState } from 'react'
 import Card from "./Card" 
-import Header from "./Header/Header"
-import db from './Firebase/firebase.js';
+import Header from "./Components/Header/Header.js"
+import db from './Components/Firebase/firebase.js';
 // import { propTypes } from 'react-bootstrap/esm/Image';
 // import { unstable_renderSubtreeIntoContainer } from 'react-dom'
 
 
 const App = props => {
-  //const [properties,setProperties] = useState([]);
+  
   const [currentPropertie,setCurrentPropertie] = useState({
     id:-1,
     name:'',
     desc:''
   });
 
-  console.log(process.env);
+  //console.log(process.env);
 
-  const [mainId,setMainId] = useState('');
+  const [mainId,setMainId] = useState(null);
   const [itemNames,setItemNames] = useState([]);
-  const [itemInfo,setItemInfo] = useState([]);
+  const [items,setItems] = useState([]);
   const [itemInfoArray,setItemInfoArray] = useState({});
-  const dbId = 'AKTrzNiiLy6zoIAChLs4';
+  const [dbId,setDBID] = useState('AKTrzNiiLy6zoIAChLs4');
 
 
-  const addUpdateDataHandler = (prop,oprationType) => {
+  const addUpdateDataHandler = async (prop) => {
+    if(prop.name == null && !prop.name) return;
+
   //Update Current Data
-  var process = '';
-  if(prop.name === 'Update' && typeof(prop.mainId) != 'undefined'){
-    const itemId = prop.id;
-    const obj = {}
+    var process = '';
 
-    obj[itemId] = prop.inputNameState
-    db.collection('Items').doc(prop.mainId).update(obj)
-    process = 'update'
-  }
+    if(prop.name === 'Update' && prop.mainId != null){
+      const itemId = prop.id;
+      const obj = {}
+
+      obj[itemId] = prop.inputNameState
+      db.collection('Items').doc(prop.mainId).update(obj)
+      process = 'update'
+    }
   //Select Exixting Data From Dropdown
-  else if(oprationType === "select" && typeof(prop.mainId) != 'undefined'){
-    this.setState({
-      dbId:prop.mainId,
-    })
+    else if(prop.name === "Select" && prop.mainId != null){
+      setDBID(prop.mainId);
+      var doc = await db.collection('Items').doc(prop.mainId).get();
+      var data = doc.data();
 
-    db.collection('Items').onSnapshot(snap =>{
-      let items= [];
-      items = snap.docs.map(doc =>{
-        if(doc.id === dbId){
-          var docs = doc.data();
-          var {Info,...docs} = docs;
+      var displayItems = {
+        id:doc.id,
+        data: data
+      }
 
-          return [Info,docs];
-        }
-      })
+      //var items = setItemsInfos(data);
+      setItemInfoArray({id:doc.id,data: data.Info});
+      setItems(displayItems);
 
-      setItemInfoArray({id:doc.id,data: items[0]});
-
-      items = setItemsInfos(items[1]);
-
-      setItemInfo(items.info);
-    })
-    process = 'select'
-  }
-  else if(prop.name === "Add" && typeof(prop.mainId) === 'undefined'){
-    db.collection("Items").add(prop.addNewData).then((data) =>{
-      db.collection('Items').onSnapshot(snap =>{
-        snap.docs.map(doc =>{
-          if(doc.id ===data.id){
-            var docs =  doc.data();
-            var {Info,...docs} = docs
-
-            this.setState({
-              itemInfo: {id:doc.id,data: Object.keys(docs).map(m=>{
-              if(!isNaN(parseInt(m)))
-                return [Number(m),docs[m]]
-              })},
-              itemInfoArray:{id:doc.id,data: Info},
-            })
-
-
-            setItemInfo({id:doc.id,data: Object.keys(docs).map(m=>{
-              if(!isNaN(parseInt(m)))
-                return [Number(m),docs[m]]
-              })});
-  
-            setItemInfoArray({id:doc.id,data: Info});
-          }
+      process = 'select';
+    }
+    else if(prop.name === "Add" && prop.mainId === null){
+      db.collection("Items").add(prop.addNewData).then((ret) =>{
+        db.doc(ret.path).get().then(doc =>{
+          var data = doc.data();
+          setItemInfoArray({id:doc.id,data: data.Info});
+          setItems({id:doc.id,data: data});
         })
+
+
+
+        // db.collection('Items').onSnapshot(snap =>{
+        //   snap.docs.map(doc =>{
+        //     if(doc.id ===data.id){
+        //       var docs =  doc.data();
+        //       var {Info,...docs} = docs;
+        //       //setItemInfo();
+        //       setItems({id:doc.id,data: Object.keys(docs).map(m=> {
+        //           if(!isNaN(parseInt(m)))
+        //             return [Number(m),docs[m]]
+        //           })
+        //       });
+        //       setItemInfoArray({id:doc.id,data: Info});
+        //     }
+        //   })
+        // })
       })
-    })
-    process='add'
-  }
-  setCurrentPropertie({
-        id:-1,
-        name: '',
-        desc:'',
-        process:process
-    });
+      process='add'
+    }
+    setCurrentPropertie({
+          id:-1,
+          name: '',
+          desc:'',
+          process:process
+      });
   }
 
-  const setItemsInfos = (items) =>{
+  // const setItemsInfos = (items) =>{
 
-    return items.map(doc => {
-        return {
-        id: doc.id,
-        data: Object.keys(items).map(m=>{
-          if(!isNaN(parseInt(m)))
-            return [Number(m),items[m]]
-          })
-        }
-    });
+  //   return items.map(doc => {
+  //       return {
+  //       id: doc.id,
+  //       data: Object.keys(items).map(m=>{
+  //         if(!isNaN(parseInt(m)))
+  //           return [Number(m),items[m]]
+  //         })
+  //       }
+  //   });
 
-  }
+  // }
 
   const editOptionHandler = (e,mid) => {
-
-    const itmeInfo = itemInfo;
+    const itmeInfo = items;
 
     const itemArray = [];
     if(typeof(itmeInfo.data) !== 'undefined' && itmeInfo.data.length > 0)
@@ -148,18 +141,19 @@ const App = props => {
 
   //Called Once After render Call 
   useEffect(() => {
+
     db.collection('Items').onSnapshot(snap =>{
       snap.docs.map(doc =>{
         if(doc.id === dbId){
-          var docs =  doc.data();
-          var {Info,...docs} = docs
-            setItemInfo({id:doc.id,data: Object.keys(docs).map(m=>{
-              if(!isNaN(parseInt(m)))
-                return [Number(m),docs[m]]
-              })});
-              setItemInfoArray({id:doc.id,data: Info})
+          var data =  doc.data();
+            setItems({
+              id:doc.id,
+              data: data
+            });
+            setItemInfoArray({id:doc.id,data: data.Info})
         }
       });
+
     },[]);
 
     db.collection('itemNames').onSnapshot(snap =>{
@@ -170,16 +164,16 @@ const App = props => {
         setItemNames({id: doc.id,data:Object.values(doc.data())});
       })
     })
-  });
+  },[]);
 
     return (  
         <div className="outer-container">
           <div className="inner-container">
             <div className="header-container">
-              <Header click={addUpdateDataHandler} item={itemNames} mid={mainId}/>
+              <Header click={addUpdateDataHandler} item={itemNames} mainId={mainId}/>
             </div>
             <div className="card-container">
-              <Card itemInfoArray={itemInfoArray} itemNames={itemNames} currentPropertie={currentPropertie} click={addUpdateDataHandler} currProps={currentPropertie}/> 
+              <Card itemInfoArray={itemInfoArray} items={items} itemNames={itemNames} currentPropertie={currentPropertie} click={addUpdateDataHandler} currProps={currentPropertie}/> 
             </div>
           </div>
         </div>
