@@ -1,7 +1,6 @@
 .header-body-container{
     display: flex;
-    height: 100%;
-
+    align-items: center;
 }
 .left-con,.right-con{
     padding: 1.15vh;
@@ -36,8 +35,8 @@
 }
 
 .css-yk16xz-control{
-    background-color: #4cab46 !important;
-    border-color: #0b5902 !important;
+    background-color: #60cc59 !important;
+    border-color: #60cc59 !important;
 }   
 
 .css-1wa3eu0-placeholder{
@@ -45,7 +44,8 @@
 }
 
 .css-1uccc91-singleValue{
-    color:#cccccc;
+    font-size: 18px;
+    color: #095600;
 }
 
 .properties:focus,.name:focus,.search-data:focus{

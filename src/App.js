@@ -144,7 +144,7 @@ const App = props => {
 
     db.collection('Items').onSnapshot(snap =>{
       snap.docs.map(doc =>{
-        if(doc.id === dbId){
+        if(doc.id === dbId) {
           var data =  doc.data();
             setItems({
               id:doc.id,
@@ -170,7 +170,7 @@ const App = props => {
         <div className="outer-container">
           <div className="inner-container">
             <div className="header-container">
-              <Header click={addUpdateDataHandler} item={itemNames} mainId={mainId}/>
+              <Header click={addUpdateDataHandler} item={itemNames} mainId={dbId}/>
             </div>
             <div className="card-container">
               <Card itemInfoArray={itemInfoArray} items={items} itemNames={itemNames} currentPropertie={currentPropertie} click={addUpdateDataHandler} currProps={currentPropertie}/> 

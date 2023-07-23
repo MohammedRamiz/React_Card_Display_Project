@@ -1,3 +1,7 @@
+.btn-add.enter-btn{
+    padding: 4px 0px !important;
+}
+
 .card-image-body{
     flex: .5;
 }

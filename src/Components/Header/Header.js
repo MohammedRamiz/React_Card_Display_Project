@@ -39,6 +39,7 @@ const Header = (props) => {
     
     const handleOnChange = (tags) => {
         setMainId(tags.value);
+        setSelectedTag(tags.label);
         setName('Select')
         setItemUpdated(true);
     }
@@ -61,6 +62,10 @@ const Header = (props) => {
                                     value: doc.id,
                                     label: lable    
                                 }
+
+                                if(doc.id === mainId)
+                                    setSelectedTag(lable);
+
                                 recommendedTags.push(tag)
                             });
                             return resolve(recommendedTags)
@@ -79,6 +84,7 @@ const Header = (props) => {
                     <AsyncSelect
                         loadOptions={loadOptions}
                         defaultOptions
+                        value = {{value: 1, label: selectedTag}}
                         onChange={handleOnChange}
                     />
                 </div>
@@ -90,108 +96,108 @@ const Header = (props) => {
 
 export default Header;
 
-export class HeaderXX extends Component {
+// export class HeaderXX extends Component {
 
-    constructor(prop){
-        super(prop);
+//     constructor(prop){
+//         super(prop);
 
-        this.state={
-            mainId:prop.mid,
-            addNewData:{},
-            name: 'Add',
-            searchItemHandler:'',
-            selectedTag: []
-        }
+//         this.state={
+//             mainId:prop.mid,
+//             addNewData:{},
+//             name: 'Add',
+//             searchItemHandler:'',
+//             selectedTag: []
+//         }
 
-    }
+//     }
 
-    enterButtonHandler = (e) => {
+//     enterButtonHandler = (e) => {
 
-        this.setState({mainId:undefined,addNewData:e,id:-1,name:'Add'},() =>{
-            this.props.click(this.state)
-        })
+//         this.setState({mainId:undefined,addNewData:e,id:-1,name:'Add'},() =>{
+//             this.props.click(this.state)
+//         })
 
-        // if(e.target.id >= 0){
-        //     this.setState({id:-1,inputProNameState: '',inputNameState:'',name:'Add'})
-        //     this.props.click(this.state)
-        // }
-        // else{
+//         // if(e.target.id >= 0){
+//         //     this.setState({id:-1,inputProNameState: '',inputNameState:'',name:'Add'})
+//         //     this.props.click(this.state)
+//         // }
+//         // else{
 
-        //     if(this.state.inputNameState !== ''){
-        //         this.setState({mainId:undefined,id:-1,name:'Add'},() =>{
-        //             this.props.click(this.state)
-        //         })
-        //     }
-        //     else{
-        //         alert('At leaste Base Attribute Requre')
-        //     }
-        // }
-    }
+//         //     if(this.state.inputNameState !== ''){
+//         //         this.setState({mainId:undefined,id:-1,name:'Add'},() =>{
+//         //             this.props.click(this.state)
+//         //         })
+//         //     }
+//         //     else{
+//         //         alert('At leaste Base Attribute Requre')
+//         //     }
+//         // }
+//     }
 
-    // chnageHandler = (e) => {
+//     // chnageHandler = (e) => {
 
-    //     if(e.target.className === "properties") {
-    //         this.setState({inputProNameState:e.target.value})
-    //     }
-    //     else {
-    //         this.setState({inputNameState:e.target.value})
-    //     }
-    // }
+//     //     if(e.target.className === "properties") {
+//     //         this.setState({inputProNameState:e.target.value})
+//     //     }
+//     //     else {
+//     //         this.setState({inputNameState:e.target.value})
+//     //     }
+//     // }
 
-    searchItemHandler = e =>{
-        this.setState({searchItemHandler:e.target.value,name:"Add"})
-    }
+//     searchItemHandler = e =>{
+//         this.setState({searchItemHandler:e.target.value,name:"Add"})
+//     }
     
-    handleOnChange = (tags) => {
-        this.setState({mainId:tags.value,id:-1,inputProNameState: '',inputNameState:'',name:"Add"},()=>{
-            this.props.click(this.state,"select")
-        })
-    }
+//     handleOnChange = (tags) => {
+//         this.setState({mainId:tags.value,id:-1,inputProNameState: '',inputNameState:'',name:"Add"},()=>{
+//             this.props.click(this.state,"select")
+//         })
+//     }
 
-    loadOptions = async (inputValue) => {
-        inputValue = inputValue.charAt(0).toUpperCase().replace(/\Wg/, "");
+//     loadOptions = async (inputValue) => {
+//         inputValue = inputValue.charAt(0).toUpperCase().replace(/\Wg/, "");
 
-        return new Promise((resolve => {
-                db.collection('Items')
-                    .orderBy('1')
-                    .startAt(inputValue)
-                    .endAt(inputValue + "\uf8ff")
-                    .get()
-                    .then(docs => {
-                        if (!docs.empty) {
-                            let recommendedTags = []
-                            docs.forEach(doc =>  {
-                                const lable = doc.data()["1"] + " - " + doc.data()["2"]
-                                const tag = {
-                                    value: doc.id,
-                                    label: lable    
-                                }
-                                recommendedTags.push(tag)
-                            });
-                            return resolve(recommendedTags)
-                        } else {
-                            return resolve([])
-                        }
-                    })
-            })
-        )
-    }
+//         return new Promise((resolve => {
+//                 db.collection('Items')
+//                     .orderBy('1')
+//                     .startAt(inputValue)
+//                     .endAt(inputValue + "\uf8ff")
+//                     .get()
+//                     .then(docs => {
+//                         if (!docs.empty) {
+//                             let recommendedTags = []
+//                             docs.forEach(doc =>  {
+//                                 const lable = doc.data()["1"] + " - " + doc.data()["2"]
+//                                 const tag = {
+//                                     value: doc.id,
+//                                     label: lable    
+//                                 }
+//                                 recommendedTags.push(tag)
+//                             });
+//                             return resolve(recommendedTags)
+//                         } else {
+//                             return resolve([])
+//                         }
+//                     })
+//             })
+//         )
+//     }
 
-    render() {
+//     render() {
 
-        return (
-                <div className="header-body-container">
-                    <div className="left-con">
-                        <div>
-                            <AsyncSelect
-                                loadOptions={this.loadOptions}
-                                defaultOptions
-                                onChange={this.handleOnChange}
-                            />
-                        </div>
-                    </div>
-                    <ModalShow id={this.state.id} item={this.props.item} click={this.enterButtonHandler}/>
-                </div>
-        )
-    }
-}
+//         return (
+//                 <div className="header-body-container">
+//                     <div className="left-con">
+//                         <div>
+//                             <AsyncSelect
+//                                 loadOptions={this.loadOptions}
+//                                 defaultOptions
+//                                 onChange={this.handleOnChange}
+//                             />
+//                         </div>
+//                     </div>
+//                     <ModalShow id={this.state.id} item={this.props.item} click={this.enterButtonHandler}/>
+//                 </div>
+//         )
+//     }
+// }
