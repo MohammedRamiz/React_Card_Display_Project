@@ -41,10 +41,10 @@ const ImageBody = (props) => {
                         const desc = typeof(items.data[index]) != 'undefined' && items.data[index].length > 0 ? items.data[index] : ''
                         return <Specificatin key={index} id={index} processType={props.state.currentPropertie} focus={focusedItem} mid={items.id} name={name} 
                                             description={desc} click={handleShow} click2={handleSpecification}/>
-                    }) : null
+                    }) : <span  className="padding-bottom">Loading Content...</span>
                 }
             </div>
-            <div className="right"></div>
+            <div></div>
         </div>
     )
 }

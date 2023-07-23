@@ -9,7 +9,7 @@ const Header = (props) => {
     const [addNewData, setAddNewData] = useState({})
     const [itemsUpdated,setItemUpdated] = useState(false);
     const [searchItemHandler, setSearchItemHandler] = useState('');
-    const [selectedTag, setSelectedTag] = useState([]);
+    const [selectedTag, setSelectedTag] = useState('Loading...');
 
     const [name,setName] = useState('Add');
 
